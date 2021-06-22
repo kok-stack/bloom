@@ -42,6 +42,21 @@ func TestAddAndGet(t *testing.T) {
 	t.Logf("uint 33 exist:%t", filter.TestUInt32(uint32(33)))
 	t.Logf("uint 65 exist:%t", filter.TestUInt64(uint64(65)))
 
+	t.Logf("new filter out")
+	newFilter := bloom.NewWithExistData(filter.GetData(), 3, false)
+	t.Logf("Hello exist:%t", newFilter.Test([]byte("Hello")))
+	t.Logf("World exist:%t", newFilter.TestString("World"))
+	t.Logf("uint 16 exist:%t", newFilter.TestUInt16(uint16(16)))
+	t.Logf("uint 32 exist:%t", newFilter.TestUInt32(uint32(32)))
+	t.Logf("uint 64 exist:%t", newFilter.TestUInt64(uint64(64)))
+
+	t.Logf("key exist:%t", newFilter.Test([]byte("key")))
+	t.Logf("exist exist:%t", newFilter.TestString("exist"))
+	t.Logf("uint 128 exist:%t", newFilter.TestUInt16(uint16(128)))
+	t.Logf("uint 33 exist:%t", newFilter.TestUInt32(uint32(33)))
+	t.Logf("uint 65 exist:%t", newFilter.TestUInt64(uint64(65)))
+	println(newFilter.FalsePositiveRate())
+
 }
 
 func TestAddAndGet2(t *testing.T) {

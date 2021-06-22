@@ -49,6 +49,31 @@ func New(size uint64, k uint64, race bool) *Filter {
 	return filter
 }
 
+func NewWithExistData(existData []byte, k uint64, race bool) *Filter {
+	log2 := uint64(math.Ceil(math.Log2(float64(len(existData)))))
+	filter := &Filter{
+		m:          1 << log2,
+		log2m:      log2,
+		k:          k,
+		keys:       existData,
+		concurrent: race,
+	}
+	if filter.concurrent {
+		filter.lock = &sync.RWMutex{}
+	}
+	return filter
+}
+
+// GetData return byte array
+func (f *Filter) GetData() []byte {
+	if f.concurrent {
+		f.lock.Lock()
+		defer f.lock.Unlock()
+	}
+
+	return f.keys
+}
+
 // Add adds byte array to bloom filter
 func (f *Filter) Add(data []byte) *Filter {
 	if f.concurrent {
